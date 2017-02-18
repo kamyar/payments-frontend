@@ -3,6 +3,8 @@ import React from 'react';
 
 import PaymentsAPI from './PaymentsAPI';
 
+import NotificationSystem from 'react-notification-system';
+
 export default class PaymentsInspectionComp extends React.Component {
     _bind(methods) {
         methods.forEach((method) => this[method] = this[method].bind(this));
@@ -23,20 +25,16 @@ export default class PaymentsInspectionComp extends React.Component {
             "PaymentMethodChangeHandler",
             "getInputForm",
         ]);
-        this.state = {
-            feedback: {},
-            // showInputForm: true,
-        }
+        this.state = {};
+        this._notificationSystem = null;
     }
 
     ErrorHandler(e) {
-        // TODO: show a notification
-        console.log("got error", e)
+        this.addNotification({msg: e.message, level: "error"})
     }
 
     SetPaymentsData(data) {
-        // TODO: set data to be rendered
-        console.log("got data", data)
+        this.addNotification({msg: "Payments data updated", level: "success"})
         this.setState({
             payments: data,
             showInputForm: false,
@@ -54,40 +52,45 @@ export default class PaymentsInspectionComp extends React.Component {
     FilterPaymentHandler() {
         if (this.state.paymentMethod) {
             PaymentsAPI.getPaymentsBy({method: this.state.paymentMethod}, this.SetPaymentsData, this.ErrorHandler);
+        } else {
+            this.addNotification({msg: "Please select a valid payment method to filter", level: "warning"})
         }
-
     }
 
     AddPaymentHandler() {
-        console.log("AddPaymentHandler");
         this.setState({
             showInputForm: true,
         })
     }
 
     cancelAddPayment() {
-        console.log("AddPaymentHandler");
         this.setState({
             showInputForm: false,
         })
     }
 
     PaymentMethodChangeHandler(e) {
+        var value = e.target.value;
         this.setState({
-            paymentMethod: e.target.value,
+            paymentMethod: value,
         });
     }
 
-    submitNewPayment(e, v) {
+    submitNewPayment(e) {
         e.preventDefault();
+
         var doc = {};
-        doc.amount = this.refs.amount.value
-        doc.currency = this.refs.currency.value
-        doc.method = this.refs.method.value
-        doc.merchant = this.refs.merchant.value
-        doc.status = this.refs.status.value
-        console.log(doc);
-        PaymentsAPI.sendNewPayment(doc, (r) => console.log(r), this.ErrorHandler);
+        doc.amount = this.refs.amount.value * 100;
+        doc.currency = this.refs.currency.value;
+        doc.method = this.refs.method.value;
+        doc.merchant = this.refs.merchant.value;
+        doc.status = this.refs.status.value;
+
+        var successNotification = {
+            msg: "New payment submitted successfully", 
+            level: "success"
+        };
+        PaymentsAPI.sendNewPayment(doc, (r) => this.addNotification(successNotification), this.ErrorHandler);
     }
 
 
@@ -107,7 +110,6 @@ export default class PaymentsInspectionComp extends React.Component {
                     </tr>
                 );
             })
-
             PaymentsTableComp = (
                 <table className="payment-table">
                     <tbody>
@@ -137,7 +139,7 @@ export default class PaymentsInspectionComp extends React.Component {
         return (
             <section className="flex-set flex--content-center main-section">
                 <form onSubmit={this.submitNewPayment}>
-                    <input type="number" placeholder="Amount in cents" ref="amount"/>
+                    <input type="number" placeholder="Amount(e.g. 25.04)" step="0.01" ref="amount"/>
                     <select ref="currency">
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
@@ -159,6 +161,17 @@ export default class PaymentsInspectionComp extends React.Component {
                 </form>
             </section>
         );
+    }
+
+    addNotification(feedback) {
+        this._notificationSystem.addNotification({
+          message: feedback.msg,
+          level: feedback.level
+        });
+    }
+
+    componentDidMount() {
+      this._notificationSystem = this.refs.notificationSystem;
     }
 
     render() {
@@ -191,6 +204,7 @@ export default class PaymentsInspectionComp extends React.Component {
                     <button onClick={this.AddPaymentHandler}>Add payment</button>
                 </aside>
                 {mainComp}
+                <NotificationSystem ref="notificationSystem" />
             </main>
         );
     }
