@@ -25,6 +25,18 @@ export default class PaymentsAPI {
 		  });
 	}
 
+	static post(path, data, SuccessCB, ErrorCB) {
+		request
+		  .post(this.constructURL('/payments')).send(data).set('Content-Type', 'application/json')
+		  .end(function(err, resp){
+		    if (err && ErrorCB) {
+		    	ErrorCB(err);
+		    } else if (SuccessCB) {
+		    	SuccessCB(resp.body);
+		    }
+		  });
+	}
+
 	static getHighestPayments(N, SuccessCB, ErrorCB) {
 		var doc = {};
 		doc._sort = 'amount';
@@ -38,6 +50,10 @@ export default class PaymentsAPI {
 
 	static getPaymentsBy(options, SuccessCB, ErrorCB) {
 		this.get(this.constructURL('/payments'), options, SuccessCB, ErrorCB)
+	}
+
+	static sendNewPayment(data, SuccessCB, ErrorCB) {
+		this.post(this.constructURL('/payments'), data, SuccessCB, ErrorCB)
 	}
 
 }
