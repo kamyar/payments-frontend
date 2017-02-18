@@ -25,6 +25,7 @@ export default class PaymentsInspectionComp extends React.Component {
         ]);
         this.state = {
             feedback: {},
+            // showInputForm: true,
         }
     }
 
@@ -37,8 +38,9 @@ export default class PaymentsInspectionComp extends React.Component {
         // TODO: set data to be rendered
         console.log("got data", data)
         this.setState({
-            payments: data
-        })
+            payments: data,
+            showInputForm: false,
+        });
     }
 
     CallbackHandler() {
@@ -107,7 +109,7 @@ export default class PaymentsInspectionComp extends React.Component {
             })
 
             PaymentsTableComp = (
-                <table className={{border: "1"}}>
+                <table className="payment-table">
                     <tbody>
                         <tr>
                             <th>ID</th>
@@ -133,7 +135,7 @@ export default class PaymentsInspectionComp extends React.Component {
 
     getInputForm() {
         return (
-            <section>
+            <section className="flex-set flex--content-center main-section">
                 <form onSubmit={this.submitNewPayment}>
                     <input type="number" placeholder="Amount in cents" ref="amount"/>
                     <select ref="currency">
@@ -152,7 +154,7 @@ export default class PaymentsInspectionComp extends React.Component {
                         <option value="accepted">ACCEPTED</option>
                         <option value="denied">DENIED</option>
                     </select> <br/>
-                    <button type="reset" onClick={this.cancelAddPayment}> Cancel </button>
+                    <input type="reset" value="Cancel" onClick={this.cancelAddPayment}/>
                     <input type="submit" value="Submit" />
                 </form>
             </section>
@@ -165,16 +167,16 @@ export default class PaymentsInspectionComp extends React.Component {
             mainComp = this.getInputForm();
         } else {
             mainComp = (
-                <section>
-                    <span>
-                        Payment Method:
-                    </span>
-                    <select type="option" onChange={this.PaymentMethodChangeHandler}>
-                        <option value="">No Filter</option>
-                        <option value="creditcard">Credit Card</option>
-                        <option value="bank-transfer">Bank Transfer</option>
-                        <option value="ideal">iDeal</option>
-                    </select>
+                <section className="flex-set flex--column main-section">
+                    <form className="flex-set flex--content-center">
+                        Payment Method Filter
+                        <select type="option" onChange={this.PaymentMethodChangeHandler} className="no-margin">
+                            <option value="">No Filter Selected</option>
+                            <option value="creditcard">Credit Card</option>
+                            <option value="bank-transfer">Bank Transfer</option>
+                            <option value="ideal">iDeal</option>
+                        </select>
+                    </form>
                     {this.getPaymentsTableComp()}
                 </section>
             );
