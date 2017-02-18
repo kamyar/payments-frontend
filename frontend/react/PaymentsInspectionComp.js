@@ -42,7 +42,7 @@ export default class PaymentsInspectionComp extends React.Component {
     }
 
     PromiseHandler() {
-        PaymentsAPI.getPaymentsBy("Ginger", this.SetPaymentsData, this.ErrorHandler);
+        PaymentsAPI.getPaymentsBy({merchant: "Ginger"}, this.SetPaymentsData, this.ErrorHandler);
     }
 
     FilterPaymentHandler() {

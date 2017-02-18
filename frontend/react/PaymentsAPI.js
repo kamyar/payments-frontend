@@ -17,7 +17,6 @@ export default class PaymentsAPI {
 		request
 		  .get(this.constructURL('/payments')).query(params)
 		  .end(function(err, resp){
-		  	console.log(resp);
 		    if (err && ErrorCB) {
 		    	ErrorCB(err);
 		    } else if (SuccessCB) {
@@ -37,13 +36,8 @@ export default class PaymentsAPI {
 		this.get(this.constructURL('/payments'), doc, SuccessCB, ErrorCB)
 	}
 
-	static getPaymentsBy(merchant, SuccessCB, ErrorCB) {
-		console.log(SuccessCB, ErrorCB);
-		var doc = {};
-		if (merchant) {
-			doc.merchant = merchant;
-		}
-		this.get(this.constructURL('/payments'), doc, SuccessCB, ErrorCB)
+	static getPaymentsBy(options, SuccessCB, ErrorCB) {
+		this.get(this.constructURL('/payments'), options, SuccessCB, ErrorCB)
 	}
 
 }
