@@ -18,6 +18,7 @@ export default class PaymentsInspectionComp extends React.Component {
             "FilterPaymentHandler",
             "AddPaymentHandler",
             "getPaymentsTableComp",
+            "PaymentMethodChangeHandler",
         ]);
         this.state = {
             feedback: {},
@@ -46,11 +47,20 @@ export default class PaymentsInspectionComp extends React.Component {
     }
 
     FilterPaymentHandler() {
-        console.log("FilterPaymentHandler");
+        if (this.state.paymentMethod) {
+            PaymentsAPI.getPaymentsBy({method: this.state.paymentMethod}, this.SetPaymentsData, this.ErrorHandler);
+        }
+
     }
 
     AddPaymentHandler() {
         console.log("AddPaymentHandler");
+    }
+
+    PaymentMethodChangeHandler(e) {
+        this.setState({
+            paymentMethod: e.target.value,
+        });
     }
 
     getPaymentsTableComp() {
@@ -93,7 +103,6 @@ export default class PaymentsInspectionComp extends React.Component {
                 </div>
             );
         }
-
     }
 
     render() {
@@ -106,8 +115,16 @@ export default class PaymentsInspectionComp extends React.Component {
                     <button onClick={this.AddPaymentHandler}>Add payment</button>
                 </aside>
                 <section>
+                    <span>
+                        Payment Method:
+                    </span>
+                    <select type="option" onChange={this.PaymentMethodChangeHandler}>
+                        <option value="">No Filter</option>
+                        <option value="creditcard">Credit Card</option>
+                        <option value="bank-transfer">Bank Transfer</option>
+                        <option value="ideal">iDeal</option>
+                    </select>
                     {this.getPaymentsTableComp()}
-                    {/* TODO: Payment methods filter dropdown here */}
                 </section>
             </main>
         );
