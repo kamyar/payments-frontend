@@ -1,7 +1,10 @@
 
 import request from 'superagent';
+import dateFormat from 'dateformat';
+
 
 const API_ADDR = 'http://localhost:3000';
+
 
 export default class PaymentsAPI {
 
@@ -53,6 +56,8 @@ export default class PaymentsAPI {
 	}
 
 	static sendNewPayment(data, SuccessCB, ErrorCB) {
+		var d = new Date();
+		data.created = dateFormat(d, "ddd mmm dd yyyy HH:MM:ss Z");
 		this.post(this.constructURL('/payments'), data, SuccessCB, ErrorCB)
 	}
 
