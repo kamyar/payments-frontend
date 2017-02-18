@@ -13,7 +13,7 @@ export default class PaymentsAPI {
 		return `${API_ADDR}${path}`
 	}
 
-	static getHighestPayments(N, callback) {
+	static getHighestPayments(N, SuccessCB, ErrorCB) {
 		var doc = {};
 		doc._sort = 'amount';
 		doc._order = 'DESC';
@@ -21,6 +21,20 @@ export default class PaymentsAPI {
 			doc._limit = N;
 			doc._page = 1;
 		}
+
+		request
+		  .get(this.constructURL('/payments')).query(doc)
+		  .end(function(err, resp){
+		    console.log('Got data', resp.body);
+		  });
+	}
+
+	static getPaymentsBy(merchant, SuccessCB, ErrorCB) {
+		var doc = {};
+		if (merchant) {
+			doc.merchant = merchant;
+		}
+
 		request
 		  .get(this.constructURL('/payments')).query(doc)
 		  .end(function(err, resp){

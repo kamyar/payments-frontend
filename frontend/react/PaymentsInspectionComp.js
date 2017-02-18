@@ -13,12 +13,21 @@ export default class PaymentsInspectionComp extends React.Component {
         this._bind([]);
     }
 
+    ErrorHandler() {
+        // TODO: show a notification
+    }
+
+    SetPaymentsData() {
+        // TODO: set data to be rendered
+    }
+
     CallbackHandler() {
         PaymentsAPI.getHighestPayments(20);
     }
 
     PromiseHandler() {
         console.log("PromiseHandler");
+        PaymentsAPI.getPaymentsBy("Ginger");
     }
 
     FilterPaymentHandler() {
@@ -39,7 +48,8 @@ export default class PaymentsInspectionComp extends React.Component {
                     <button onClick={this.AddPaymentHandler}>Add payment</button>
                 </aside>
                 <section>
-                {/* Payments Table Here */}
+                    {/* TODO: Payments table here */}
+                    {/* TODO: Payment methods filter dropdown here */}
                 </section>
             </main>
         );
