@@ -2,6 +2,7 @@
 import request from 'superagent';
 import dateFormat from 'dateformat';
 
+import * as utils from './utils';
 
 const API_ADDR = 'http://localhost:3000';
 
@@ -42,15 +43,16 @@ export default class PaymentsAPI {
 
 	static getHighestPayments(N, SuccessCB, ErrorCB) {
 		this.get(this.constructURL('/payments'), {}, function(data) {
-			data = data.sort((lhs, rhs) => rhs.amount - lhs.amount).slice(0, 20);
+			// More maintainable but bad performance sort & slice
+			// data = data.sort((lhs, rhs) => rhs.amount - lhs.amount).slice(0, 20);
+			// Performant but harder to read get only the largest N
+			data = utils.getMaxNOfArray(data, N, 'amount')
 			SuccessCB(data);
 		}, ErrorCB);
 	}
 
 	static getPaymentsBy(filters, SuccessCB, ErrorCB) {
 		this.get(this.constructURL('/payments'), {}, function(data){
-			console.log("filtering for", filters)
-			console.log(Object.keys(filters))
 			Object.keys(filters).forEach( function(filter, _) {
 				data = data.filter((item) => item[filter] == filters[filter]);
 			})
