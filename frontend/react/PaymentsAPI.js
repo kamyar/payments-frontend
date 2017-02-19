@@ -51,13 +51,8 @@ export default class PaymentsAPI {
 		}, ErrorCB);
 	}
 
-	static getPaymentsBy(filters, SuccessCB, ErrorCB) {
-		this.get(this.constructURL('/payments'), {}, function(data){
-			Object.keys(filters).forEach( function(filter, _) {
-				data = data.filter((item) => item[filter] == filters[filter]);
-			})
-			SuccessCB(data);
-		}, ErrorCB);
+	static getPaymentsBy(filters) {
+		return request.get(this.constructURL('/payments')).query(filters).then(r => r.body);
 	}
 
 	static sendNewPayment(data, SuccessCB, ErrorCB) {

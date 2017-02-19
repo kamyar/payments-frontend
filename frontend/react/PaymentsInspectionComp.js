@@ -46,12 +46,21 @@ export default class PaymentsInspectionComp extends React.Component {
     }
 
     PromiseHandler() {
-        PaymentsAPI.getPaymentsBy({merchant: "Ginger"}, this.SetPaymentsData, this.ErrorHandler);
+        var that = this;
+        PaymentsAPI.getPaymentsBy({merchant: "Ginger"})
+            .then(that.SetPaymentsData)
+            .catch(that.ErrorHandler);
     }
 
     FilterPaymentHandler() {
         if (this.state.paymentMethod) {
-            PaymentsAPI.getPaymentsBy({method: this.state.paymentMethod}, this.SetPaymentsData, this.ErrorHandler);
+            var that = this;
+            PaymentsAPI.getPaymentsBy()
+                .then(function(data) {
+                     data.filter((item) => item.method == this.state.paymentMethod)
+                 }) //Filter data by payment method
+                .then(that.SetPaymentsData)
+                .catch(that.ErrorHandler);
         } else {
             this.addNotification({msg: "Please select a valid payment method to filter", level: "warning"})
         }
