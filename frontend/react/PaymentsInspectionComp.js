@@ -57,7 +57,7 @@ export default class PaymentsInspectionComp extends React.Component {
             var that = this;
             PaymentsAPI.getPaymentsBy()
                 .then(function(data) {
-                     data.filter((item) => item.method == this.state.paymentMethod)
+                     return data.filter((item) => item.method == that.state.paymentMethod)
                  }) //Filter data by payment method
                 .then(that.SetPaymentsData)
                 .catch(that.ErrorHandler);
