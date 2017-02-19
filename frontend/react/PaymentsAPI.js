@@ -41,24 +41,27 @@ export default class PaymentsAPI {
 	}
 
 	static getHighestPayments(N, SuccessCB, ErrorCB) {
-		var doc = {};
-		doc._sort = 'amount';
-		doc._order = 'DESC';
-		if (N) {
-			doc._limit = N;
-			doc._page = 1;
-		}
-		this.get(this.constructURL('/payments'), doc, SuccessCB, ErrorCB)
+		this.get(this.constructURL('/payments'), {}, function(data) {
+			data = data.sort((lhs, rhs) => rhs.amount - lhs.amount).slice(0, 20);
+			SuccessCB(data);
+		}, ErrorCB);
 	}
 
-	static getPaymentsBy(options, SuccessCB, ErrorCB) {
-		this.get(this.constructURL('/payments'), options, SuccessCB, ErrorCB)
+	static getPaymentsBy(filters, SuccessCB, ErrorCB) {
+		this.get(this.constructURL('/payments'), {}, function(data){
+			console.log("filtering for", filters)
+			console.log(Object.keys(filters))
+			Object.keys(filters).forEach( function(filter, _) {
+				data = data.filter((item) => item[filter] == filters[filter]);
+			})
+			SuccessCB(data);
+		}, ErrorCB);
 	}
 
 	static sendNewPayment(data, SuccessCB, ErrorCB) {
 		var d = new Date();
 		data.created = dateFormat(d, "ddd mmm dd yyyy HH:MM:ss Z");
-		this.post(this.constructURL('/payments'), data, SuccessCB, ErrorCB)
+		this.post(this.constructURL('/payments'), data, SuccessCB, ErrorCB);
 	}
 
 }
