@@ -101,6 +101,7 @@ export default class PaymentsInspectionComp extends React.Component {
             PaymentsTableCompInner = this.state.payments.map(function(v, i) {
                 return (
                     <tr key={i}>
+                        <td>{i+1}</td>
                         <td>{v.id}</td>
                         <td>{v.merchant}</td>
                         <td>{v.method}</td>
@@ -115,6 +116,7 @@ export default class PaymentsInspectionComp extends React.Component {
                     <tbody>
                         <tr>
                             <th>ID</th>
+                            <th>Transaction ID</th>
                             <th>Merchant</th>
                             <th>Method</th>
                             <th>Amount</th>
